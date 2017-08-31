@@ -22,42 +22,47 @@ import numpy as np
 from scipy import signal
 from scipy import optimize
 from numpy import fft
-def read_header(filename):
-    with open(filename,'r') as f:
-        header = f.readlines()[:6]
-        #record_length = header[0].split()[2]
-        #sample_interval = header[1].split()[2]
-        trigger_point = header[2].split()[4]
-        return float(trigger_point) #float(record_length),float(sample_interval),float(Horizontal_offset)
 
-
-def read_pdv_data(filename):
-    with open(filename,'r') as f:
-        f.seek(0)
-        amplitude = [];time = [];
-        for n, line in enumerate(f):
-            if n>6:
-                r= line.split('\t')
-                for i in r:
-                    if i in '':
-                        r.remove(i)
-                a = float(r[2].split()[0]);t = float(r[1]);
-                time.append(t)
-                amplitude.append(a)
-        return amplitude, time
-
-def next_pow_2(n):
-    return n.bit_length()-1
-
-def gaus(x,a,x0,sigma):
-    return a*np.exp(-(x-x0)**2/(2*sigma**2))
     
 def pdv_flyer_velocity(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
-    root = tk.Tk()
-    root.withdraw()
-    root.pdv_filename = askopenfilename(filetypes=(("Text files","*Ch1.txt"),("All files","*.*")),title="Select file")
-    name, ch_ext = root.pdv_filename.split('Ch')
-    amplitude = []
+    
+    
+    '''a bunch of functions used later in the program'''
+    def read_header(filename):
+        with open(filename,'r') as f:
+            header = f.readlines()[:6]
+            #record_length = header[0].split()[2]
+            #sample_interval = header[1].split()[2]
+            trigger_point = header[2].split()[4]
+            return float(trigger_point) #float(record_length),float(sample_interval),float(Horizontal_offset)
+
+
+    def read_pdv_data(filename):
+        with open(filename,'r') as f:
+            f.seek(0)
+            amplitude = [];time = [];
+            for n, line in enumerate(f):
+                if n>6:
+                    r= line.split('\t')
+                    for i in r:
+                        if i in '':
+                            r.remove(i)
+                    a = float(r[2].split()[0]);t = float(r[1]);
+                    time.append(t)
+                    amplitude.append(a)
+            return amplitude, time
+
+    def next_pow_2(n):
+        return n.bit_length()-1
+
+    def gaus(x,a,x0,sigma):
+        return a*np.exp(-(x-x0)**2/(2*sigma**2))
+        root = tk.Tk()
+        root.withdraw()
+        root.pdv_filename = askopenfilename(filetypes=(("Text files","*Ch1.txt"),("All files","*.*")),title="Select file")
+        name, ch_ext = root.pdv_filename.split('Ch')
+        amplitude = []
+    '''actual code begins here'''
     
     if channel_bool ==1:
         ch_num = 4
@@ -276,8 +281,7 @@ if __name__ == "__main__":
     channel_bool=0   (boolean to determine if we have 3 working channels or not. 1 means 3 channels, and actually anything else means 2.
                         keep in mind that this program runs under the assumption that scope channel 4 is the broken channel.
                         if this ever changes, it might require a little logic manipulation.)
-    '''
-    ch_bool = 1                  
+    '''                
     pdv_flyer_velocity(channel_bool=1)
     
         
