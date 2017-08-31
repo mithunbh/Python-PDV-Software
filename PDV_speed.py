@@ -24,7 +24,7 @@ from scipy import optimize
 from numpy import fft
 
     
-def pdv_flyer_velocity(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
+def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
     
     
     '''a bunch of functions used later in the program'''
@@ -170,7 +170,9 @@ def pdv_flyer_velocity(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool
         else:
             velocity_lineout_fit[i] = 0
     
-    
+    return camp, velocity_lineout_fit,time_ax,
+
+def find_pdv_speed(camp,velocity_lineout_fit):
     plt.ion()
     h = plt.figure(2)
     plt.plot(time_ax[0:ubound],velocity_lineout_fit[0:ubound],marker = 'o',linestyle = ':',markersize = 1)
@@ -252,7 +254,7 @@ def pdv_flyer_velocity(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool
         print("estimated gaussian fit error = " + str(perr))
     except RuntimeError:
         print("unable to optimize gaussian fit")
-        print(speed)
+        print("Max Lineout velocity= " + str(speed))
     
     plt.figure(1)
     plt.imshow(STFT[0:vubound,0:ubound],aspect = "auto",origin="lower",extent = [time_ax[0],time_ax[ubound],0,velocity_ax[vubound]],cmap = "seismic",interpolation = "bicubic")
