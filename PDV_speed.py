@@ -23,7 +23,7 @@ from scipy import signal
 from scipy import optimize
 from numpy import fft
 
-<<<<<<< HEAD
+
 
 def read_PDV_spectrogram(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
 
@@ -32,8 +32,6 @@ def read_PDV_spectrogram(time_res=15,sample_rate=.08,time_offset=47.9,channel_bo
     
 def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
     
-    
->>>>>>> 86aaffb7a57641755c760d2b7cd2fb68e251b828
     '''a bunch of functions used later in the program'''
     def read_header(filename):
         with open(filename,'r') as f:
