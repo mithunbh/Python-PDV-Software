@@ -175,20 +175,16 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
             velocity_lineout_fit[i] = -float(p[1])/(2.0*float(p[0]))
         else:
             velocity_lineout_fit[i] = 0
-<<<<<<< HEAD
 
     return time, camp, velocity_lineout_fit,time_ax
 
 def find_pdv_speed(time,camp,velocity_lineout_fit,time_ax):
-=======
+
     
     return camp, velocity_lineout_fit,time_ax,
 
 def find_pdv_speed(camp,velocity_lineout_fit):
-<<<<<<< HEAD
->>>>>>> 86aaffb7a57641755c760d2b7cd2fb68e251b828
-=======
->>>>>>> 86aaffb7a57641755c760d2b7cd2fb68e251b828
+
     plt.ion()
     h = plt.figure(2)
     plt.plot(time_ax[0:ubound],velocity_lineout_fit[0:ubound],marker = 'o',linestyle = ':',markersize = 1)
@@ -271,14 +267,7 @@ def find_pdv_speed(camp,velocity_lineout_fit):
     except RuntimeError:
         print("unable to optimize gaussian fit")
         print("Max Lineout velocity= " + str(speed))
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-=======
->>>>>>> 86aaffb7a57641755c760d2b7cd2fb68e251b828
-    
->>>>>>> 86aaffb7a57641755c760d2b7cd2fb68e251b828
     plt.figure(1)
     plt.imshow(STFT[0:vubound,0:ubound],aspect = "auto",origin="lower",extent = [time_ax[0],time_ax[ubound],0,velocity_ax[vubound]],cmap = "seismic",interpolation = "bicubic")
 
