@@ -185,6 +185,9 @@ def find_pdv_speed(time,camp,velocity_lineout_fit,time_ax):
     return camp, velocity_lineout_fit,time_ax,
 
 def find_pdv_speed(camp,velocity_lineout_fit):
+<<<<<<< HEAD
+>>>>>>> 86aaffb7a57641755c760d2b7cd2fb68e251b828
+=======
 >>>>>>> 86aaffb7a57641755c760d2b7cd2fb68e251b828
     plt.ion()
     h = plt.figure(2)
@@ -269,8 +272,11 @@ def find_pdv_speed(camp,velocity_lineout_fit):
         print("unable to optimize gaussian fit")
         print("Max Lineout velocity= " + str(speed))
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> 86aaffb7a57641755c760d2b7cd2fb68e251b828
     
 >>>>>>> 86aaffb7a57641755c760d2b7cd2fb68e251b828
     plt.figure(1)
