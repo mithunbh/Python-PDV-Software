@@ -24,7 +24,7 @@ from scipy import optimize
 from numpy import fft
 
     
-def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
+def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=False):
     
     
     '''a bunch of functions used later in the program'''
@@ -64,7 +64,7 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
         amplitude = []
     '''actual code begins here'''
     
-    if channel_bool ==1:
+    if channel_bool ==True:
         ch_num = 4
     else:
         ch_num = 3
@@ -136,7 +136,7 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
         STFT.append(Zxx)
     STFT = np.asarray(STFT)
     
-    if channel_bool==1:
+    if channel_bool==True:
         STFT = (np.abs(STFT[0])+np.abs(STFT[1])+np.abs(STFT[2]))/3
     else:
         STFT = (np.abs(STFT[0])+np.abs(STFT[1]))/2
@@ -259,11 +259,10 @@ def find_pdv_speed(camp,velocity_lineout_fit):
     plt.figure(1)
     plt.imshow(STFT[0:vubound,0:ubound],aspect = "auto",origin="lower",extent = [time_ax[0],time_ax[ubound],0,velocity_ax[vubound]],cmap = "seismic",interpolation = "bicubic")
     
-    plt.figure(5)
-    plt.plot(np.asarray(time_2)*1e9,amplitude[2])
-    plt.show()
+    
     plt.figure(4)
     plt.waitforbuttonpress()
+    return velocity_lineout_fit, time, popt[1],perr
     
     
     
@@ -284,7 +283,7 @@ if __name__ == "__main__":
                         keep in mind that this program runs under the assumption that scope channel 4 is the broken channel.
                         if this ever changes, it might require a little logic manipulation.)
     '''                
-    pdv_flyer_velocity(channel_bool=1)
+    pdv_flyer_velocity(channel_bool=True)
     
         
     
