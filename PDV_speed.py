@@ -265,5 +265,9 @@ def find_pdv_speed(camp,velocity_lineout_fit,time_ax,velocity_ax):
 '''the main execution loop. Put user defined variables in here'''
 if __name__ == "__main__":
   
-    time, camp, velocity_lineout_fit,time_ax=read_PDV_spectrogram(channel_bool=True)
-    final_velocity, error = find_pdv_speed(camp,velocity_lineout_fit)
+    time, camp, velocity_lineout_fit,time_ax,velocity_ax=read_PDV_spectrogram(channel_bool=True)
+    final_velocity, error,vubound,ubound = find_pdv_speed(camp,velocity_lineout_fit,time_ax,velocity_ax,vubound,ubound)
+    plt.figure(1)
+    plt.imshow(STFT[0:vubound,0:ubound],aspect = "auto",origin="lower",extent = [time_ax[0],time_ax[ubound],0,velocity_ax[vubound]],cmap = "seismic",interpolation = "bicubic")
+    plt.figure(4)
+    plt.waitforbuttonpress()
