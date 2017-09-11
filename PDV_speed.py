@@ -27,10 +27,6 @@ from numpy import fft
 
 def read_PDV_spectrogram(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
 
-
-=======
-    
-def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=False):
     
     '''a bunch of functions used later in the program'''
     def read_header(filename):
@@ -68,13 +64,8 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
         name, ch_ext = root.pdv_filename.split('Ch')
         amplitude = []
     '''actual code begins here'''
-<<<<<<< HEAD
-    
-    if channel_bool ==True:
-=======
 
-    if channel_bool ==1:
->>>>>>> 1a19370128e08f8bc6a70292fb35496bc4523bb4
+    if channel_bool ==True:
         ch_num = 4
     else:
         ch_num = 3
@@ -144,13 +135,9 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
         f,t,Zxx = signal.stft(camp[i][index90-1000:-1],fs = sample_freq,window = signal.hamming(int(r)),nfft = 10*int(r),noverlap = r-test,nperseg = len(signal.hamming(r)));
         STFT.append(Zxx)
     STFT = np.asarray(STFT)
-<<<<<<< HEAD
+
     
     if channel_bool==True:
-=======
-
-    if channel_bool==1:
->>>>>>> 1a19370128e08f8bc6a70292fb35496bc4523bb4
         STFT = (np.abs(STFT[0])+np.abs(STFT[1])+np.abs(STFT[2]))/3
     else:
         STFT = (np.abs(STFT[0])+np.abs(STFT[1]))/2
@@ -158,16 +145,7 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
 
     time_ax = [t[i]*1e9 + time_offset-time[index90-1000] for i in range(len(t))]
     velocity_ax = [i*.775*1e-9 for i in f]
-    for t in time_ax:
-        if t >=600 and t<601:
-            ubound = time_ax.index(t)
-    for v in velocity_ax:
-        if v>.05 and v<=.06:
-            vfilter = velocity_ax.index(v)
-        if v>=4:
-            vubound = velocity_ax.index(v)
-            break
-    STFT[0:vfilter,:] = 0
+    
 
 
 
@@ -186,13 +164,19 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
 
     return time, camp, velocity_lineout_fit,time_ax
 
-def find_pdv_speed(time,camp,velocity_lineout_fit,time_ax):
+def find_pdv_speed(camp,velocity_lineout_fit,time_ax,velocity_ax):
 
-    
-    return camp, velocity_lineout_fit,time_ax,
 
-def find_pdv_speed(camp,velocity_lineout_fit):
-
+    for t in time_ax:
+        if t >=600 and t<601:
+            ubound = time_ax.index(t)
+    for v in velocity_ax:
+        if v>.05 and v<=.06:
+            vfilter = velocity_ax.index(v)
+        if v>=4:
+            vubound = velocity_ax.index(v)
+            break
+    STFT[0:vfilter,:] = 0
     plt.ion()
     h = plt.figure(2)
     plt.plot(time_ax[0:ubound],velocity_lineout_fit[0:ubound],marker = 'o',linestyle = ':',markersize = 1)
@@ -200,11 +184,6 @@ def find_pdv_speed(camp,velocity_lineout_fit):
     pi,pf = plt.ginput(2)
     plt.title("Velocity lineout")
     h.show()
-
-
-
-
-
     minv = min(np.abs([velocity_lineout_fit[j]-pf[1] for j in range(len(velocity_lineout_fit))]))
     mint = min(np.abs([time_ax[j]-(pi[0]) for j in range(len(time_ax))]))
     maxt = min(np.abs([time_ax[j]-(pf[0]) for j in range(len(time_ax))]))
@@ -278,69 +257,13 @@ def find_pdv_speed(camp,velocity_lineout_fit):
 
     plt.figure(1)
     plt.imshow(STFT[0:vubound,0:ubound],aspect = "auto",origin="lower",extent = [time_ax[0],time_ax[ubound],0,velocity_ax[vubound]],cmap = "seismic",interpolation = "bicubic")
-<<<<<<< HEAD
-    
-    
     plt.figure(4)
     plt.waitforbuttonpress()
-    return velocity_lineout_fit, time, popt[1],perr
-    
-    
-    
-        
-    
-    
-             
-    
+    return popt[1],perr
     
 
 '''the main execution loop. Put user defined variables in here'''
 if __name__ == "__main__":
-    '''takes variables (with their defaults):
-    time_res=15 value in nanoseconds
-    sample_rate=.08
-    time_offset=47.9 (time offset, determined empirically after alignment)
-    channel_bool=0   (boolean to determine if we have 3 working channels or not. 1 means 3 channels, and actually anything else means 2.
-                        keep in mind that this program runs under the assumption that scope channel 4 is the broken channel.
-                        if this ever changes, it might require a little logic manipulation.)
-    '''                
-    pdv_flyer_velocity(channel_bool=True)
-    
-        
-    
-    
-    
-
-
-    
-=======
-
-    plt.figure(5)
-    plt.plot(np.asarray(time_2)*1e9,amplitude[2])
-    plt.show()
-    plt.figure(4)
-    plt.waitforbuttonpress()
-    return Y,popt,perr,ffilt,gaus(ffilt,*popt)
->>>>>>> 1a19370128e08f8bc6a70292fb35496bc4523bb4
-
-
-
-
-
-
-
-
-
-
-'''the main execution loop. Put user defined variables in here'''
-if __name__ == "__main__":
-    '''takes variables (with their defaults):
-    time_res=15 value in nanoseconds
-    sample_rate=.08
-    time_offset=47.9 (time offset, determined empirically after alignment)
-    channel_bool=0   (boolean to determine if we have 3 working channels or not. 1 means 3 channels, and actually anything else means 2.
-                        keep in mind that this program runs under the assumption that scope channel 4 is the broken channel.
-                        if this ever changes, it might require a little logic manipulation.)
-    '''
-    time, camp, velocity_lineout_fit,time_ax=read_PDV_spectrogram(channel_bool=1)
-    find_pdv_speed()
+  
+    time, camp, velocity_lineout_fit,time_ax=read_PDV_spectrogram(channel_bool=True)
+    final_velocity, error = find_pdv_speed(camp,velocity_lineout_fit)
