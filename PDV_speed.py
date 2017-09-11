@@ -23,9 +23,14 @@ from scipy import signal
 from scipy import optimize
 from numpy import fft
 
+
+
+def read_PDV_spectrogram(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
+
+
+=======
     
 def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=False):
-    
     
     '''a bunch of functions used later in the program'''
     def read_header(filename):
@@ -63,8 +68,13 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
         name, ch_ext = root.pdv_filename.split('Ch')
         amplitude = []
     '''actual code begins here'''
+<<<<<<< HEAD
     
     if channel_bool ==True:
+=======
+
+    if channel_bool ==1:
+>>>>>>> 1a19370128e08f8bc6a70292fb35496bc4523bb4
         ch_num = 4
     else:
         ch_num = 3
@@ -78,14 +88,14 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
                 j = j+ abs(trigger_point)
             time = t
 
-    
+
     s = [];rms = []
     for i in range(ch_num):
         s.append(0)
         for j in range(int(0.05*len(time))):
             s[i] = s[i] + amplitude[i][j]**2
         rms.append(s[i]/int(0.05*len(time)))
-    
+
     t_i = []
     for i in range(ch_num):
         for j in range(len(time)):
@@ -95,10 +105,10 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
     fitvalues = [];meanvals = [];camp = []
     t_i = max(t_i)
     for i in range(ch_num):
-        
+
         fitvalues.append(np.polyfit(time[t_i:len(amplitude[i])],amplitude[i][t_i:len(amplitude[i])],1))
         meanvals.append(np.polyval(fitvalues[i],time))
-        
+
         if i==0:
             n = .35
         if i==1:
@@ -109,22 +119,21 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
             n = 0.34
 
         camp.append([(amplitude[i][j]-meanvals[i][j])/n for j in range(len(amplitude[i]))])
-        
-  
-    camp.remove(camp[2]); 
+
+
+    camp.remove(camp[2]);
     max_trigger = max(amplitude[2])
     time_vector = time[0:amplitude[2].index(max_trigger)]
     for i in amplitude[2]:
         if i>= .9*max_trigger:
             index90 = amplitude[2].index(i)
             break
-    
+
     time90 = time[index90]*1e9
-    
+
     time_offset = time_offset-time90;
-    
+
     sample_freq = 1/(time[1]-time[0]);
-    time_2 = time
     time = [i*1e9 + time_offset for i in time];
     r = int(round(sample_freq*time_res*1e-9));
     test = int(round(sample_rate/.04));
@@ -135,13 +144,18 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
         f,t,Zxx = signal.stft(camp[i][index90-1000:-1],fs = sample_freq,window = signal.hamming(int(r)),nfft = 10*int(r),noverlap = r-test,nperseg = len(signal.hamming(r)));
         STFT.append(Zxx)
     STFT = np.asarray(STFT)
+<<<<<<< HEAD
     
     if channel_bool==True:
+=======
+
+    if channel_bool==1:
+>>>>>>> 1a19370128e08f8bc6a70292fb35496bc4523bb4
         STFT = (np.abs(STFT[0])+np.abs(STFT[1])+np.abs(STFT[2]))/3
     else:
         STFT = (np.abs(STFT[0])+np.abs(STFT[1]))/2
-     
-    
+
+
     time_ax = [t[i]*1e9 + time_offset-time[index90-1000] for i in range(len(t))]
     velocity_ax = [i*.775*1e-9 for i in f]
     for t in time_ax:
@@ -154,25 +168,31 @@ def read_PDV_data(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=Fals
             vubound = velocity_ax.index(v)
             break
     STFT[0:vfilter,:] = 0
-    
-    
-    
-    
-    
+
+
+
+
+
     mx = np.argmax(STFT,axis = 0)
     velocity_lineout = [velocity_ax[mx[i]] for i in range(len(mx))]
     velocity_lineout_fit = velocity_lineout
-   
+
     for i in range(len(velocity_lineout)):
         if velocity_lineout[i]>0.1 and (mx[i]+2)<len(velocity_ax):
             p = np.polyfit(velocity_ax[mx[i]-2:mx[i]+2],STFT[mx[i]-2:mx[i]+2,i],2)
             velocity_lineout_fit[i] = -float(p[1])/(2.0*float(p[0]))
         else:
             velocity_lineout_fit[i] = 0
+
+    return time, camp, velocity_lineout_fit,time_ax
+
+def find_pdv_speed(time,camp,velocity_lineout_fit,time_ax):
+
     
     return camp, velocity_lineout_fit,time_ax,
 
 def find_pdv_speed(camp,velocity_lineout_fit):
+
     plt.ion()
     h = plt.figure(2)
     plt.plot(time_ax[0:ubound],velocity_lineout_fit[0:ubound],marker = 'o',linestyle = ':',markersize = 1)
@@ -180,11 +200,11 @@ def find_pdv_speed(camp,velocity_lineout_fit):
     pi,pf = plt.ginput(2)
     plt.title("Velocity lineout")
     h.show()
-    
-    
 
-    
-  
+
+
+
+
     minv = min(np.abs([velocity_lineout_fit[j]-pf[1] for j in range(len(velocity_lineout_fit))]))
     mint = min(np.abs([time_ax[j]-(pi[0]) for j in range(len(time_ax))]))
     maxt = min(np.abs([time_ax[j]-(pf[0]) for j in range(len(time_ax))]))
@@ -206,15 +226,15 @@ def find_pdv_speed(camp,velocity_lineout_fit):
         if np.abs(velocity_lineout_fit[i]-pf[1])==minv:
             speed = velocity_lineout_fit[i]
             break
-   
 
-    
+
+
     ti_ind = time.index(ti)
     tf_ind = time.index(tf)
     camp = np.asarray(camp)
-    
-    
-    
+
+
+
     L = tf_ind-ti_ind
     NFFT = 2**next_pow_2(int(L)*10)
 
@@ -226,23 +246,23 @@ def find_pdv_speed(camp,velocity_lineout_fit):
     else:
         Y = (Y1+Y2)/(2*L)
     f = (((time[1]-time[0])*1e-9)**-1)/2*np.linspace(0,1,NFFT/2+1)*.775*1e-9
-    
+
     Yshort = 2*np.abs(Y[0:int(NFFT/2)+1])
     yfilt = []
     ffilt = []
     for i in range(len(f)):
         if f[i]> 0.5*speed and f[i]<1.5*speed:
             yfilt.append(Yshort[i])
-            ffilt.append(f[i]) 
-   
+            ffilt.append(f[i])
+
     yfilt = np.asarray(yfilt)
     ffilt = np.asarray(ffilt)
-    
-    
+
+
     plt.figure(3)
     plt.plot(f,2*np.abs(Y[0:int(NFFT/2)+1]))
     plt.show()
-    
+
     mean = sum(ffilt*yfilt)/len(ffilt)
     sigma = sum(yfilt*(ffilt - mean)**2)/len(ffilt)
     try:
@@ -255,9 +275,10 @@ def find_pdv_speed(camp,velocity_lineout_fit):
     except RuntimeError:
         print("unable to optimize gaussian fit")
         print("Max Lineout velocity= " + str(speed))
-    
+
     plt.figure(1)
     plt.imshow(STFT[0:vubound,0:ubound],aspect = "auto",origin="lower",extent = [time_ax[0],time_ax[ubound],0,velocity_ax[vubound]],cmap = "seismic",interpolation = "bicubic")
+<<<<<<< HEAD
     
     
     plt.figure(4)
@@ -292,26 +313,34 @@ if __name__ == "__main__":
 
 
     
+=======
+
+    plt.figure(5)
+    plt.plot(np.asarray(time_2)*1e9,amplitude[2])
+    plt.show()
+    plt.figure(4)
+    plt.waitforbuttonpress()
+    return Y,popt,perr,ffilt,gaus(ffilt,*popt)
+>>>>>>> 1a19370128e08f8bc6a70292fb35496bc4523bb4
 
 
 
-    
 
 
 
-    
-    
-    
-    
 
 
 
-    
-        
-                
 
-    
-           
-
-
-
+'''the main execution loop. Put user defined variables in here'''
+if __name__ == "__main__":
+    '''takes variables (with their defaults):
+    time_res=15 value in nanoseconds
+    sample_rate=.08
+    time_offset=47.9 (time offset, determined empirically after alignment)
+    channel_bool=0   (boolean to determine if we have 3 working channels or not. 1 means 3 channels, and actually anything else means 2.
+                        keep in mind that this program runs under the assumption that scope channel 4 is the broken channel.
+                        if this ever changes, it might require a little logic manipulation.)
+    '''
+    time, camp, velocity_lineout_fit,time_ax=read_PDV_spectrogram(channel_bool=1)
+    find_pdv_speed()
