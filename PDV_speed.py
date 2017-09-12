@@ -27,7 +27,7 @@ from numpy import fft
 
 def read_PDV_spectrogram(time_res=15,sample_rate=.08,time_offset=47.9,channel_bool=0):
 
-    
+
     '''a bunch of functions used later in the program'''
     def read_header(filename):
         with open(filename,'r') as f:
@@ -136,7 +136,7 @@ def read_PDV_spectrogram(time_res=15,sample_rate=.08,time_offset=47.9,channel_bo
         STFT.append(Zxx)
     STFT = np.asarray(STFT)
 
-    
+
     if channel_bool==True:
         STFT = (np.abs(STFT[0])+np.abs(STFT[1])+np.abs(STFT[2]))/3
     else:
@@ -145,7 +145,7 @@ def read_PDV_spectrogram(time_res=15,sample_rate=.08,time_offset=47.9,channel_bo
 
     time_ax = [t[i]*1e9 + time_offset-time[index90-1000] for i in range(len(t))]
     velocity_ax = [i*.775*1e-9 for i in f]
-    
+
 
 
 
@@ -251,20 +251,18 @@ def find_pdv_speed(camp,velocity_lineout_fit,time_ax,velocity_ax):
         perr = np.sqrt(np.diag(pcov))
         perr = perr[1]*np.sqrt(len(ffilt))*np.sqrt(2)
         print("estimated gaussian fit error = " + str(perr))
+        return popt[1],perr
     except RuntimeError:
         print("unable to optimize gaussian fit")
         print("Max Lineout velocity= " + str(speed))
+        return speed,0
 
-    plt.figure(1)
-    plt.imshow(STFT[0:vubound,0:ubound],aspect = "auto",origin="lower",extent = [time_ax[0],time_ax[ubound],0,velocity_ax[vubound]],cmap = "seismic",interpolation = "bicubic")
-    plt.figure(4)
-    plt.waitforbuttonpress()
-    return popt[1],perr
-    
+
+
 
 '''the main execution loop. Put user defined variables in here'''
 if __name__ == "__main__":
-  
+
     time, camp, velocity_lineout_fit,time_ax,velocity_ax=read_PDV_spectrogram(channel_bool=True)
     final_velocity, error,vubound,ubound = find_pdv_speed(camp,velocity_lineout_fit,time_ax,velocity_ax,vubound,ubound)
     plt.figure(1)
